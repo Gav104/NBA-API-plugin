@@ -1,8 +1,37 @@
 <?php
 
 
+if ( !empty( $_POST )) {
+	
+}
 
-$url = 'https://free-nba.p.rapidapi.com/players?search=kyrie';
+$first_name = sanitize_text_field ( $_POST ['goh_nba_first_name_data'] ); 
+$last_name = sanitize_text_field ( $_POST['goh_nba_last_name_data'] );
+
+
+
+function first_last_search( $first_name = '', $last_name = '') {
+
+	$search = '';
+
+	if ( $first_name == TRUE && $last_name == TRUE ) {
+		$search = $first_name . '+' . $last_name;
+	}
+
+	if ( $first_name == TRUE && $last_name == FALSE ) {
+		$search = $first_name;
+	}
+
+	if ( $first_name == FALSE && $last_name == TRUE ) {
+		$search = $last_name;
+	}
+
+	return $search;
+}
+
+
+
+$url = 'https://free-nba.p.rapidapi.com/players?search=' . first_last_search( $first_name, $last_name) ;
 
 $args = [
   'headers' => [
@@ -61,7 +90,7 @@ tr:nth-child(even) {
 <p>Here is where you enter the first name and last name to find a players stats:</p>
 
 <div class="container" >
-  <form action="admin.php?page=Header-and-Footer-plugin/includes/goh-hfp-acp-page.php" method="post">
+  <form action="admin.php?page=NBA-API-plugin/includes/goh-nba-acp-page.php" method="post">
 
     <label>First Name</label>
     <input value="<?php echo esc_attr ($first_name) ?>" type="text" name="goh_nba_first_name_data" id="first_name_data">
@@ -91,14 +120,14 @@ tr:nth-child(even) {
 		</tr>
 		<?php foreach ($players as $player) : ?>
 		<tr>
-			<td> <?php echo $player['first_name']; ?> </td>
-			<td> <?php echo $player['last_name']; ?> </td>
-			<td> <?php echo $player['height_feet'] . "'". $player['height_inches']; ?> </td>
-			<td> <?php echo $player['weight_pounds']; ?></td>
-			<td> <?php echo $player['position']; ?> </td>
-			<td> <?php echo($player["team"]["full_name"]);  ?> </td>
-			<td> <?php echo($player["team"]["conference"]);  ?> </td>
-			<td> <?php echo($player["team"]["division"]);  ?> </td>
+			<td> <?= $player['first_name']; ?> </td>
+			<td> <?= $player['last_name']; ?> </td>
+			<td> <?= $player['height_feet'] . "'". $player['height_inches']; ?> </td>
+			<td> <?= $player['weight_pounds']; ?></td>
+			<td> <?= $player['position']; ?> </td>
+			<td> <?= $player["team"]["full_name"];  ?> </td>
+			<td> <?= $player["team"]["conference"];  ?> </td>
+			<td> <?= $player["team"]["division"];  ?> </td>
 		</tr>
 		<?php endforeach; ?>
 	</tbody>
